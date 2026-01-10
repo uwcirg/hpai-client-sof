@@ -1,7 +1,7 @@
 # HPAI SoF App in React
 
 This application was bootstrapped with [Vite](https://vite.dev/).
-You can learn more in the [Create React App documentation](https://vite.dev/guide/).
+You can learn more in the [Vite documentation](https://vite.dev/guide/).
 To learn React, check out the [React documentation](https://reactjs.org/).
 The app can be launched via the [SMART<sup>&reg;</sup> app launch framework](http://hl7.org/fhir/smart-app-launch/index.html).
 
