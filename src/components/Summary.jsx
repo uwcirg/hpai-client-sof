@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import DOMPurify from "dompurify";
-import { Box, CircularProgress, Alert } from "@mui/material";
+import { Alert, Box, CircularProgress, Stack } from "@mui/material";
 import { getEnv } from "@util";
 
 const Summary = () => {
@@ -50,9 +50,9 @@ const Summary = () => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" p={4}>
+      <Stack justifyContent={"center"} alignItems={"center"} p={4}>
         <CircularProgress />
-      </Box>
+      </Stack>
     );
   }
 
