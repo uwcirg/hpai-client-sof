@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
-import DOMPurify from "dompurify";
-import { Alert, Box, CircularProgress, Stack } from "@mui/material";
+import { Alert, CircularProgress, Stack } from "@mui/material";
 import { getEnv } from "@util";
 
 const Summary = () => {
-  const [htmlContent, setHtmlContent] = useState("");
+  const [link, setLink] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const contentUrl = getEnv("REACT_APP_IFRAME_URL");
+  const linkUrl = getEnv("REACT_APP_POPULATE_LINK_URL");
   const timeout = 15000; // time out after 15 seconds
 
   useEffect(() => {
-    const fetchContent = async () => {
+    const fetchUrl = async () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), timeout);
 
@@ -19,18 +18,19 @@ const Summary = () => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(contentUrl, {
+        const response = await fetch(linkUrl, {
           signal: controller.signal,
         });
 
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-          throw new Error(`Failed to fetch content: ${response.statusText} ${response.status}`);
+          throw new Error(`Failed to fetch URL for content: ${response.statusText} ${response.status}`);
         }
 
-        const html = await response.text();
-        setHtmlContent(html);
+        const responseLinkUrl = await response.text();
+        console.log("link URL from request ", responseLinkUrl)
+        setLink(responseLinkUrl);
       } catch (err) {
         clearTimeout(timeoutId);
         if (err.name === "AbortError") {
@@ -43,10 +43,10 @@ const Summary = () => {
       }
     };
 
-    if (contentUrl) {
-      fetchContent();
+    if (linkUrl) {
+      fetchUrl();
     }
-  }, [contentUrl]);
+  }, [linkUrl]);
 
   if (loading) {
     return (
@@ -60,7 +60,16 @@ const Summary = () => {
     return <Alert severity="error">Error loading content: {error}</Alert>;
   }
 
-  return <Box className="content-container" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(htmlContent) }} />;
+  return (
+    <iframe
+      src={link}
+      title="SOF app iframe"
+      width="100%"
+      height="100%"
+      frameBorder={0}
+      sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-top-navigation"
+    ></iframe>
+  );
 };
 
 export default Summary;
