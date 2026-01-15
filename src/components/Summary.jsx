@@ -6,7 +6,8 @@ const Summary = () => {
   const [link, setLink] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const linkUrl = getEnv("REACT_APP_POPULATE_LINK_URL");
+  // the service URL to make request against to retrieve the URL to be used with the iframe
+  const populateLinkUrl = getEnv("REACT_APP_POPULATE_LINK_URL");
   const timeout = 15000; // time out after 15 seconds
 
   useEffect(() => {
@@ -18,7 +19,7 @@ const Summary = () => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(linkUrl, {
+        const response = await fetch(populateLinkUrl, {
           signal: controller.signal,
         });
 
@@ -43,10 +44,10 @@ const Summary = () => {
       }
     };
 
-    if (linkUrl) {
+    if (populateLinkUrl) {
       fetchUrl();
     }
-  }, [linkUrl]);
+  }, [populateLinkUrl]);
 
   if (loading) {
     return (
