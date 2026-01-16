@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Alert, CircularProgress, Stack } from "@mui/material";
+import { FhirClientContext } from "@context/FhirClientContext";
 import { getEnv } from "@util";
 
 const Summary = () => {
+  const { patient } = useContext(FhirClientContext);
   const [link, setLink] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // the service URL to make request against to retrieve the URL to be used with the iframe
-  const populateLinkUrl = getEnv("REACT_APP_POPULATE_LINK_URL");
+  const questionnaireId = getEnv("REACT_APP_QUESTIONNAIRE_ID");
+  // used to make request to retrieve the URL to be used with the iframe
+  const populateLinkUrl = questionnaireId ? `/Questionnaire/${questionnaireId}/$populatelink` : "";
   const timeout = 15000; // time out after 15 seconds
 
   useEffect(() => {
@@ -19,7 +22,11 @@ const Summary = () => {
         setLoading(true);
         setError(null);
 
+        if (!questionnaireId) throw new Error("No Questionnaire ID specified");
+
         const response = await fetch(populateLinkUrl, {
+          method: "POST",
+          body: JSON.stringify({ subject: `Patient/${patient?.id}` }),
           signal: controller.signal,
         });
 
@@ -30,7 +37,7 @@ const Summary = () => {
         }
 
         const responseLinkUrl = await response.text();
-        console.log("link URL from request ", responseLinkUrl)
+        console.log("link URL from request ", responseLinkUrl);
         setLink(responseLinkUrl);
       } catch (err) {
         clearTimeout(timeoutId);
@@ -47,7 +54,7 @@ const Summary = () => {
     if (populateLinkUrl) {
       fetchUrl();
     }
-  }, [populateLinkUrl]);
+  }, [populateLinkUrl, patient, questionnaireId]);
 
   if (loading) {
     return (
