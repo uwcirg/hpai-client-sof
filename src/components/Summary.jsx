@@ -27,7 +27,17 @@ const Summary = () => {
         const response = await client.request({
           url: populateLinkUrl,
           method: "POST",
-          body: JSON.stringify({ subject: patient?.id }),
+          body: JSON.stringify({
+            "resourceType": "Parameters",
+            "parameter": [
+              {
+                "name": "subject",
+                "valueReference": {
+                  "reference": `Patient/${patient?.id}`
+                }
+              }
+            ]
+          })
           headers: {
             "Content-Type": "application/json",
           },
