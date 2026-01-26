@@ -37,7 +37,7 @@ const Summary = () => {
                 }
               }
             ]
-          })
+          }),
           headers: {
             "Content-Type": "application/json",
           },
