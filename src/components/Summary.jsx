@@ -53,6 +53,7 @@ const Summary = () => {
         }
 
         const responseLinkJson = await response.json().catch((e) => {
+          console.log(e);
           throw new Error("Error parsing URL response JSON");
         });
         
