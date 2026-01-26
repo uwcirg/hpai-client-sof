@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Alert, CircularProgress, Stack } from "@mui/material";
+import { Alert, Box, CircularProgress, Stack } from "@mui/material";
 import { FhirClientContext } from "@context/FhirClientContext";
 import { getEnv, getEnvVersion } from "@util";
 
@@ -90,7 +90,7 @@ const Summary = () => {
   const versionString = getEnvVersion();
 
   return (
-    <><iframe
+    <Box className="summary-wrapper"><iframe
       src={link}
       title="SOF app iframe"
       width="100%"
@@ -98,8 +98,8 @@ const Summary = () => {
       frameBorder={0}
       sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-top-navigation"
     ></iframe>
-    <footer>{versionString}</footer>
-    </>
+    <footer>Version: {versionString}</footer>
+    </Box>
   );
 };
 
