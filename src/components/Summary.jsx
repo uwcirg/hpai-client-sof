@@ -27,17 +27,19 @@ const Summary = () => {
         const response = await client.request({
           url: populateLinkUrl,
           method: "POST",
-          body: JSON.stringify({ subject: `Patient/${patient?.id}` }),
+          body: JSON.stringify({ subject: patient?.id }),
           headers: {
             "Content-Type": "application/json",
           },
           signal: controller.signal,
+        }).catch((e) => {
+          throw e;
         });
 
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-          throw new Error(`Failed to fetch URL for content: ${response.statusText} ${response.status}`);
+          throw new Error(`Failed to fetch URL for content: ${response?.statusText??""} ${response?.status??""}`);
         }
 
         const responseLinkUrl = await response.text();
