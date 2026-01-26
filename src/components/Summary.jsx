@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Alert, CircularProgress, Stack } from "@mui/material";
 import { FhirClientContext } from "@context/FhirClientContext";
-import { getEnv } from "@util";
+import { getEnv, getEnvVersion } from "@util";
 
 const Summary = () => {
   const { client, patient } = useContext(FhirClientContext);
@@ -24,45 +24,38 @@ const Summary = () => {
 
         if (!questionnaireId) throw new Error("No Questionnaire ID specified");
 
-        const response = await client.request({
+        const responseLinkJson = await client.request({
           url: populateLinkUrl,
           method: "POST",
           body: JSON.stringify({
-            "resourceType": "Parameters",
-            "parameter": [
+            resourceType: "Parameters",
+            parameter: [
               {
-                "name": "subject",
-                "valueReference": {
-                  "reference": `Patient/${patient?.id}`
-                }
-              }
-            ]
+                name: "subject",
+                valueReference: {
+                  reference: `Patient/${patient?.id}`,
+                },
+              },
+            ],
           }),
           headers: {
             "Content-Type": "application/json",
           },
           signal: controller.signal,
-        }).catch((e) => {
-          throw e;
         });
 
         clearTimeout(timeoutId);
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch URL for content: ${response?.statusText??""} ${response?.status??""}`);
-        }
+        console.log("Response JSON ", responseLinkJson);
 
-        const responseLinkJson = await response.json().catch((e) => {
-          console.log(e);
-          throw new Error("Error parsing URL response JSON");
-        });
-        
-        const res = responseLinkJson?.parameter?.find(param => param.name === "link");
+        const res = responseLinkJson?.parameter?.find((param) => param.name === "link");
         const responseLinkUrl = res?.valueUri;
+
         console.log("link URL from request ", responseLinkUrl);
-        if (responseLinkUrl)
+
+        if (responseLinkUrl) {
           setLink(responseLinkUrl);
-        else {
+        } else {
           throw new Error("No link URL from response.");
         }
       } catch (err) {
@@ -94,8 +87,10 @@ const Summary = () => {
     return <Alert severity="error">Error loading content: {error}</Alert>;
   }
 
+  const versionString = getEnvVersion();
+
   return (
-    <iframe
+    <><iframe
       src={link}
       title="SOF app iframe"
       width="100%"
@@ -103,6 +98,8 @@ const Summary = () => {
       frameBorder={0}
       sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-top-navigation"
     ></iframe>
+    <footer>{versionString}</footer>
+    </>
   );
 };
 

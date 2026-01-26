@@ -80,6 +80,10 @@ export function getEnvDashboardURL() {
   return getEnv("REACT_APP_DASHBOARD_URL");
 }
 
+export function getEnvVersion() {
+  return getEnv("REACT_APP_VERSION_STRING");
+}
+
 export function shouldShowPatientInfo(client) {
   // from query string
   if (sessionStorage.getItem(queryNeedPatientBanner) !== null) {
