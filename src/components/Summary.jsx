@@ -52,9 +52,18 @@ const Summary = () => {
           throw new Error(`Failed to fetch URL for content: ${response?.statusText??""} ${response?.status??""}`);
         }
 
-        const responseLinkUrl = await response.text();
+        const responseLinkJson = await response.json().catch((e) => {
+          throw new Error("Error parsing URL response JSON");
+        });
+        
+        const res = responseLinkJson?.parameter?.find(param => param.name === "link");
+        const responseLinkUrl = res?.valueUri;
         console.log("link URL from request ", responseLinkUrl);
-        setLink(responseLinkUrl);
+        if (responseLinkUrl)
+          setLink(responseLinkUrl);
+        else {
+          throw new Error("No link URL from response.");
+        }
       } catch (err) {
         clearTimeout(timeoutId);
         if (err.name === "AbortError") {
