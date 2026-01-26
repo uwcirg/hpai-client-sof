@@ -28,6 +28,9 @@ const Summary = () => {
           url: populateLinkUrl,
           method: "POST",
           body: JSON.stringify({ subject: `Patient/${patient?.id}` }),
+          headers: {
+            "Content-Type": "application/json",
+          },
           signal: controller.signal,
         });
 
