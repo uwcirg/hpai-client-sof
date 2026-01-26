@@ -4,7 +4,7 @@ import { FhirClientContext } from "@context/FhirClientContext";
 import { getEnv } from "@util";
 
 const Summary = () => {
-  const { patient } = useContext(FhirClientContext);
+  const { client, patient } = useContext(FhirClientContext);
   const [link, setLink] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,7 +24,8 @@ const Summary = () => {
 
         if (!questionnaireId) throw new Error("No Questionnaire ID specified");
 
-        const response = await fetch(populateLinkUrl, {
+        const response = await client.request({
+          url: populateLinkUrl,
           method: "POST",
           body: JSON.stringify({ subject: `Patient/${patient?.id}` }),
           signal: controller.signal,
@@ -54,7 +55,7 @@ const Summary = () => {
     if (populateLinkUrl) {
       fetchUrl();
     }
-  }, [populateLinkUrl, patient, questionnaireId]);
+  }, [populateLinkUrl, patient, client, questionnaireId]);
 
   if (loading) {
     return (
