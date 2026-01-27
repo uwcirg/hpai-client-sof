@@ -41,7 +41,6 @@ export default function Header(props) {
     }
     e.target.classList.remove("ghost");
   };
-  const shouldHideReturnButton = () => !returnURL || inEHR;
 
   const renderTitle = () => {
     const appTitle = getEnvAppTitle();
@@ -182,9 +181,9 @@ export default function Header(props) {
           >
             {renderLogo()}
             {renderTitle()}
-            <Stack direction={"row"} sx={{ flex: "1 1" }} alignItems="center">
-              {!inEHR && renderPatientInfo()}
-              {!shouldHideReturnButton && renderReturnButton()}
+            <Stack direction={"row"} sx={{ flex: "1 1" }} alignItems="center" justifyContent={"space-between"}>
+              {!inEHR && <Box>{renderPatientInfo()}</Box>}
+              {returnURL && renderReturnButton()}
             </Stack>
           </Stack>
         </Toolbar>
