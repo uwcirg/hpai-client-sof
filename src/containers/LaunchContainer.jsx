@@ -132,24 +132,19 @@ export default function Launch() {
 
   return (
     <ThemeProvider theme={getTheme()}>
-      {state.error && <ErrorComponent message={state.error}></ErrorComponent>}
+      {state.error && (
+        <Stack spacing={2} direction="column" alignItems="center">
+          <ErrorComponent message={state.error}></ErrorComponent>
+          <ReturnButton />
+        </Stack>
+      )}
       {state.loading && (
         <Stack spacing={2} direction="row" sx={{ padding: (theme) => theme.spacing(3) }} alignItems="center">
           <CircularProgress></CircularProgress>
           <div>Launching ...</div>
         </Stack>
       )}
-      {state.authorized && (
-        <Stack spacing={2} direction="column" sx={{ padding: (theme) => theme.spacing(3) }} alignItems="flex-start">
-          <div>Authorization successful. Redirecting ...</div>
-          <Stack spacing={2} direction="row" alignItems="center">
-            <ReturnButton />
-            <Button variant="outlined" href="/">
-              Refresh
-            </Button>
-          </Stack>
-        </Stack>
-      )}
+      {state.authorized && <div>Authorization successful. Redirecting ...</div>}
     </ThemeProvider>
   );
 }
