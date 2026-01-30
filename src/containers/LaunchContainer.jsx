@@ -65,17 +65,16 @@ function reducer(state, action) {
 }
 
 export default function Launch() {
-  const [state, dispatch] = React.useReducer(reducer, { loading: true, authorized: false });
+  const [state, dispatch] = React.useReducer(reducer, { loading: true, authorized: false, error: ""});
 
   React.useEffect(() => {
     // Check if user is already authorized
     FHIR.oauth2
       .ready()
       .then(() => {
-        // User is already authorized, redirect to the main app
-        console.log("User already authorized, redirecting to app");
+        // User is already authorized
+        console.log("User already authorized.");
         dispatch({ type: "authorized" });
-        //window.location.href = "/";
       })
       .catch(() => {
         // User is not authorized, proceed with authorization flow
