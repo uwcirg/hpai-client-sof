@@ -13,13 +13,17 @@ import ReturnButton from "@components/ReturnButton";
 
 const fetchContextJson = async (authURL) => {
   if (!authURL) {
+    // default, if no auth url provided
     return {
       clientId: "hpai_sof_client",
       scope: "profile roles email patient/*.read",
+      // default to not show patient banner, can be overridden
+      // cannot seem to override this when testing against SMART healthIT launcher though
       need_patient_banner: false,
     };
   }
   const response = await fetch(authURL, {
+    // include cookies in request
     credentials: "include",
   }).catch((e) => {
     console.log(e);
@@ -65,7 +69,7 @@ function reducer(state, action) {
 }
 
 export default function Launch() {
-  const [state, dispatch] = React.useReducer(reducer, { loading: true, authorized: false, error: ""});
+  const [state, dispatch] = React.useReducer(reducer, { loading: true, authorized: false, error: "" });
 
   React.useEffect(() => {
     // Check if user is already authorized
