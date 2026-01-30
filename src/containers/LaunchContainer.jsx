@@ -8,7 +8,6 @@ import { fetchEnvData, getEnv } from "@util";
 import { getTheme } from "@config/theme_config";
 import ErrorComponent from "@components/ErrorComponent";
 import "../style/App.scss";
-import { Button } from "@mui/material";
 import ReturnButton from "@components/ReturnButton";
 
 const fetchContextJson = async (authURL) => {
