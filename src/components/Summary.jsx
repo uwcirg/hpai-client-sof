@@ -36,6 +36,10 @@ const Summary = () => {
                   reference: `Patient/${patient?.id}`,
                 },
               },
+              {
+                name: "theme",
+                valueString: "wa-doh-theme",
+              }
             ],
           }),
           headers: {
