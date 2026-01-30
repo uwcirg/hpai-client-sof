@@ -3,14 +3,13 @@ import React, { useRef, useContext, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { isImagefileExist, getEnvAppTitle, getEnvProjectId, imageOK, toAbsoluteUrl } from "@util";
 import { FhirClientContext } from "@context/FhirClientContext";
 import PatientInfo from "@components/PatientInfo";
+import ReturnButton from "@components/ReturnButton";
 
 export default function Header(props) {
   const theme = useTheme();
@@ -130,20 +129,10 @@ export default function Header(props) {
     );
   };
   const renderPatientInfo = () => <PatientInfo patient={patient}></PatientInfo>;
-  const renderReturnButton = (props) => {
+  const renderReturnButton = () => {
     return (
       <Box className="print-hidden">
-        <Button
-          color="primary"
-          href={returnURL + "/clear_session"}
-          className="btn-return-url"
-          startIcon={<ArrowBackIcon></ArrowBackIcon>}
-          size="medium"
-          variant="contained"
-          {...props}
-        >
-          Patient List
-        </Button>
+        <ReturnButton />
       </Box>
     );
   };
