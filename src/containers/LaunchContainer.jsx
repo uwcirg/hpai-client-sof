@@ -53,7 +53,7 @@ export default function Launch() {
       const patientId = urlParams.get("patient");
       console.log("patient id from url query string: ", patientId);
       //retrieve need patient banner querystring if any
-      const needPatientBanner = urlParams.get("need_patient_banner");
+      const needPatientBanner = urlParams.get("need_patient_banner")
       console.log("need_patient_banner from url query string: ", needPatientBanner);
       console.log("Auth url ", authURL);
       fetchContextJson(authURL)

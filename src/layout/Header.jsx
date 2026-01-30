@@ -8,7 +8,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import DashboardIcon from "@mui/icons-material/DashboardOutlined";
 import { isImagefileExist, getEnvAppTitle, getEnvProjectId, imageOK, toAbsoluteUrl } from "@util";
 import { FhirClientContext } from "@context/FhirClientContext";
 import PatientInfo from "@components/PatientInfo";
@@ -21,12 +20,18 @@ export default function Header(props) {
 
   const { returnURL, inEHR } = props;
   const getDesktopImgSrc = async () => {
-    const projectUrl = toAbsoluteUrl(`/assets/${getEnvProjectId()}/img/logo.png`);
+    const projectId = getEnvProjectId();
+    const projectUrl = projectId
+      ? toAbsoluteUrl(`/assets/${getEnvProjectId()}/img/logo.png`)
+      : toAbsoluteUrl(`/assets/default/img/doh_logo.png`);
     const ok = await isImagefileExist(projectUrl).catch(() => false);
     return ok ? projectUrl : toAbsoluteUrl(`/assets/default/img/logo.png`);
   };
   const getMobileImgSrc = async () => {
-    const projectUrl = toAbsoluteUrl(`/assets/${getEnvProjectId()}/img/logo_mobile.png`);
+    const projectId = getEnvProjectId();
+    const projectUrl = projectId
+      ? toAbsoluteUrl(`/assets/${getEnvProjectId()}/img/logo_mobile.png`)
+      : toAbsoluteUrl(`/assets/default/img/doh_logo.png`);
     const ok = await isImagefileExist(projectUrl).catch(() => false);
     return ok ? projectUrl : toAbsoluteUrl(`/assets/default/img/logo_mobile.png`);
   };
@@ -60,71 +65,69 @@ export default function Header(props) {
   };
 
   const renderLogo = () => {
-    const projectID = getEnvProjectId();
-    if (!projectID) return <DashboardIcon fontSize="large" color="primary"></DashboardIcon>;
-    else
-      return (
-        <>
-          <Box
-            sx={{
-              display: {
-                xs: "none",
-                sm: "none",
-                md: "inline-flex",
-              },
+  
+    return (
+      <>
+        <Box
+          sx={{
+            display: {
+              xs: "none",
+              sm: "none",
+              md: "inline-flex",
+            },
+          }}
+        >
+          <button
+            onClick={() => (window.location = returnURL + "/clear_session")}
+            style={{
+              background: "none",
+              border: 0,
             }}
           >
-            <button
-              onClick={() => (window.location = returnURL + "/clear_session")}
+            <img
+              className="logo header-logo ghost"
+              ref={desktopImgRef}
+              alt={"project logo"}
               style={{
-                background: "none",
-                border: 0,
+                height: 40,
+                cursor: "pointer",
               }}
-            >
-              <img
-                className="logo header-logo ghost"
-                ref={desktopImgRef}
-                alt={"project logo"}
-                style={{
-                  height: 40,
-                  cursor: "pointer",
-                }}
-                onLoad={handleImageLoaded}
-                onError={handleImageLoaded}
-              ></img>
-            </button>
-          </Box>
-          <Box
-            sx={{
-              display: {
-                xs: "inline-flex",
-                sm: "inline-flex",
-                md: "none",
-              },
+              onLoad={handleImageLoaded}
+              onError={handleImageLoaded}
+            ></img>
+          </button>
+        </Box>
+        <Box
+          sx={{
+            display: {
+              xs: "inline-flex",
+              sm: "inline-flex",
+              md: "none",
+            },
+          }}
+        >
+          <button
+            onClick={() => (window.location = returnURL + "/clear_session")}
+            style={{
+              background: "none",
+              border: 0,
             }}
           >
-            <button
-              onClick={() => (window.location = returnURL + "/clear_session")}
+            <img
+              ref={mobileImgRef}
+              alt={"project logo"}
+              onLoad={handleImageLoaded}
+              onError={handleImageLoaded}
+              className="logo ghost"
               style={{
-                background: "none",
-                border: 0,
+                cursor: "pointer",
+                height: 40,
               }}
-            >
-              <img
-                ref={mobileImgRef}
-                alt={"project logo"}
-                onLoad={handleImageLoaded}
-                onError={handleImageLoaded}
-                className="logo ghost"
-                style={{
-                  cursor: "pointer",
-                  height: 40,
-                }}
-              ></img>
-            </button>
-          </Box>
-        </>
-      );
+            ></img>
+          </button>
+        </Box>
+      </>
+    );
   };
   const renderPatientInfo = () => <PatientInfo patient={patient}></PatientInfo>;
   const renderReturnButton = (props) => {
