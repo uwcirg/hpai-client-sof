@@ -107,12 +107,15 @@ export default function Launch() {
           sessionStorage.setItem("launchContextJson", JSON.stringify(json));
 
           console.log("launch context json ", json);
-          FHIR.oauth2.authorize(json).then(() => {
-            dispatch({type: "authorized"});
-          }).catch((e) => {
-            console.log("FHIR auth error ", e);
-            dispatch({ type: "error", payload: "Fhir auth error. see console for detail." });
-          });
+          FHIR.oauth2
+            .authorize(json)
+            .then(() => {
+              dispatch({ type: "authorized" });
+            })
+            .catch((e) => {
+              console.log("FHIR auth error ", e);
+              dispatch({ type: "error", payload: "Fhir auth error. see console for detail." });
+            });
         })
         .catch((error) => dispatch({ type: "error", payload: error?.message }));
     });
@@ -121,8 +124,8 @@ export default function Launch() {
   return (
     <ThemeProvider theme={getTheme()}>
       {state.error && (
-        <Stack spacing={1} direction="column" alignItems="flex-start" sx={{padding: 1, width: "100%"}}>
-          <ErrorComponent message={state.error} containerStyle={{width: "100%"}}></ErrorComponent>
+        <Stack spacing={1} direction="column" alignItems="flex-start" sx={{ padding: 1, width: "100%" }}>
+          <ErrorComponent message={state.error} containerStyle={{ width: "100%" }}></ErrorComponent>
           <ReturnButton />
         </Stack>
       )}
