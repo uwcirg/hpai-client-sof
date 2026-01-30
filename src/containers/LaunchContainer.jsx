@@ -64,76 +64,65 @@ function reducer(state, action) {
       error: action.payload || "Application error.",
     };
   }
-  throw Error("Unknown action.");
+  throw Error("Unknown action. ", action.type);
 }
 
 export default function Launch() {
   const [state, dispatch] = React.useReducer(reducer, { loading: true, authorized: false, error: "" });
 
   React.useEffect(() => {
-    // Check if user is already authorized
-    FHIR.oauth2
-      .ready()
-      .then(() => {
-        // User is already authorized
-        console.log("User already authorized.");
-        dispatch({ type: "authorized" });
-        window.location = "/";
-      })
-      .catch(() => {
-        // User is not authorized, proceed with authorization flow
-        console.log("User not authorized, starting authorization flow");
-        fetchEnvData().then((results) => {
-          console.log("environment variables ", results);
-          const backendURL = getEnv("REACT_APP_CONF_API_URL");
-          const authURL = backendURL ? `${backendURL}/auth/auth-info` : "";
-          const urlParams = new URLSearchParams(window.location.search);
-          const patientId = urlParams.get("patient");
-          console.log("patient id from url query string: ", patientId);
-          const needPatientBanner = urlParams.get("need_patient_banner");
-          console.log("need_patient_banner from url query string: ", needPatientBanner);
-          console.log("Auth url ", authURL);
+    fetchEnvData().then((results) => {
+      console.log("environment variables ", results);
+      const backendURL = getEnv("REACT_APP_CONF_API_URL");
+      const authURL = backendURL ? `${backendURL}/auth/auth-info` : "";
+      const urlParams = new URLSearchParams(window.location.search);
+      const patientId = urlParams.get("patient");
+      console.log("patient id from url query string: ", patientId);
+      const needPatientBanner = urlParams.get("need_patient_banner");
+      console.log("need_patient_banner from url query string: ", needPatientBanner);
+      console.log("Auth url ", authURL);
 
-          fetchContextJson(authURL)
-            .then((json) => {
-              if (!json) {
-                dispatch({ type: "error", payload: "No valid context json specified" });
-                return;
-              }
-              if (patientId) {
-                json.patientId = patientId;
-                sessionStorage.setItem(queryPatientIdKey, patientId);
-              }
+      fetchContextJson(authURL)
+        .then((json) => {
+          if (!json) {
+            dispatch({ type: "error", payload: "No valid context json specified" });
+            return;
+          }
+          if (patientId) {
+            json.patientId = patientId;
+            sessionStorage.setItem(queryPatientIdKey, patientId);
+          }
 
-              if (needPatientBanner !== null) {
-                json.need_patient_banner = needPatientBanner;
-                sessionStorage.setItem(queryNeedPatientBanner, needPatientBanner);
-              }
+          if (needPatientBanner !== null) {
+            json.need_patient_banner = needPatientBanner;
+            sessionStorage.setItem(queryNeedPatientBanner, needPatientBanner);
+          }
 
-              const envClientId = getEnv("REACT_APP_CLIENT_ID");
-              if (envClientId) json.clientId = envClientId;
+          const envClientId = getEnv("REACT_APP_CLIENT_ID");
+          if (envClientId) json.clientId = envClientId;
 
-              const envAuthScopes = getEnv("REACT_APP_AUTH_SCOPES");
-              if (envAuthScopes) json.scope = envAuthScopes;
+          const envAuthScopes = getEnv("REACT_APP_AUTH_SCOPES");
+          if (envAuthScopes) json.scope = envAuthScopes;
 
-              sessionStorage.setItem("launchContextJson", JSON.stringify(json));
+          sessionStorage.setItem("launchContextJson", JSON.stringify(json));
 
-              console.log("launch context json ", json);
-              FHIR.oauth2.authorize(json).catch((e) => {
-                console.log("FHIR auth error ", e);
-                dispatch({ action: "error", payload: "Fhir auth error. see console for detail." });
-              });
-            })
-            .catch((error) => dispatch({ action: "error", payload: error?.message }));
-        });
-      });
+          console.log("launch context json ", json);
+          FHIR.oauth2.authorize(json).then(() => {
+            dispatch({type: "authorized"});
+          }).catch((e) => {
+            console.log("FHIR auth error ", e);
+            dispatch({ type: "error", payload: "Fhir auth error. see console for detail." });
+          });
+        })
+        .catch((error) => dispatch({ type: "error", payload: error?.message }));
+    });
   }, []);
 
   return (
     <ThemeProvider theme={getTheme()}>
       {state.error && (
-        <Stack spacing={2} direction="column" alignItems="center">
-          <ErrorComponent message={state.error}></ErrorComponent>
+        <Stack spacing={1} direction="column" alignItems="flex-start" sx={{padding: 1, width: "100%"}}>
+          <ErrorComponent message={state.error} containerStyle={{width: "100%"}}></ErrorComponent>
           <ReturnButton />
         </Stack>
       )}

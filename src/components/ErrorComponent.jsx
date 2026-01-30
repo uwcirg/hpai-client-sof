@@ -1,9 +1,10 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
 
 export default function Error(props) {
-  const { message } = props;
+  const { message, containerStyle } = props;
   const getMessage = () => {
     if (!message) return "";
     if (typeof message !== "string" && message?.message) {
@@ -32,14 +33,14 @@ export default function Error(props) {
     icon: props.icon
   };
   return (
-    <div className="error-container">
+    <Box className="error-container" sx={containerStyle ?? {}}>
       {isString && (
         <Alert {...alertParams}>
           <div dangerouslySetInnerHTML={{ __html: messageToBeRendered }}></div>
         </Alert>
       )}
       {!isString && <Alert {...alertParams}>{messageToBeRendered}</Alert>}
-    </div>
+    </Box>
   );
 }
 
@@ -48,4 +49,5 @@ Error.propTypes = {
   severity: PropTypes.string,
   sx: PropTypes.object,
   icon: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  containerStyle: PropTypes.object
 };
