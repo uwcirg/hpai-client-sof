@@ -79,6 +79,7 @@ export default function Launch() {
         // User is already authorized
         console.log("User already authorized.");
         dispatch({ type: "authorized" });
+        window.location = "/";
       })
       .catch(() => {
         // User is not authorized, proceed with authorization flow
@@ -140,7 +141,7 @@ export default function Launch() {
       )}
       {state.authorized && (
         <Stack spacing={2} direction="column" sx={{ padding: (theme) => theme.spacing(3) }} alignItems="flex-start">
-          <div>Authorization successful.</div>
+          <div>Authorization successful. Redirecting ...</div>
           <Stack spacing={2} direction="row" alignItems="center">
             <ReturnButton />
             <Button variant="outlined" href="/">
