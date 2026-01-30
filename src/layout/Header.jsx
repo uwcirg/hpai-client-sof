@@ -8,7 +8,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-//import DashboardIcon from "@mui/icons-material/DashboardOutlined";
 import { isImagefileExist, getEnvAppTitle, getEnvProjectId, imageOK, toAbsoluteUrl } from "@util";
 import { FhirClientContext } from "@context/FhirClientContext";
 import PatientInfo from "@components/PatientInfo";
@@ -22,7 +21,6 @@ export default function Header(props) {
   const { returnURL, inEHR } = props;
   const getDesktopImgSrc = async () => {
     const projectId = getEnvProjectId();
-    console.log("Project ID in Header:", projectId);
     const projectUrl = projectId
       ? toAbsoluteUrl(`/assets/${getEnvProjectId()}/img/logo.png`)
       : toAbsoluteUrl(`/assets/default/img/doh_logo.png`);
@@ -67,8 +65,7 @@ export default function Header(props) {
   };
 
   const renderLogo = () => {
-    //const projectID = getEnvProjectId();
-
+  
     return (
       <>
         <Box
