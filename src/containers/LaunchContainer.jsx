@@ -1,6 +1,5 @@
 import React from "react";
 import FHIR from "fhirclient";
-import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import CircularProgress from "@mui/material/CircularProgress";
 import { ThemeProvider } from "@mui/material/styles";
@@ -70,7 +69,6 @@ function reducer(state, action) {
 
 export default function Launch() {
   const [state, dispatch] = React.useReducer(reducer, { loading: true, authorized: false, error: "" });
-  const handleBackToApp = () => (window.location = "/");
 
   React.useEffect(() => {
     fetchEnvData().then((results) => {
