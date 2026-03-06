@@ -9,7 +9,7 @@ import Patient from "@/models/Patient";
 export default function PatientInfo(props) {
   const theme = useTheme();
   const { patient } = props;
-  const patientObj = new Patient(patient);
+  const patientObj = patient ? new Patient(patient) : {};
   const getPatientName = () => {
     return patientObj.name ? patientObj.name : "Patient name unknown";
   };
