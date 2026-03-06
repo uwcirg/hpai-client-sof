@@ -514,9 +514,14 @@ export default function Report({ removeNulls = true }) {
 
   return (
     <Box sx={{ p: { xs: 1, sm: 2 } }}>
+      {!loading && (
+        <Typography variant="h2" sx={{ fontSize: "1.4rem", fontWeight: 500, mb: 1.25 }}>
+          HPAI Summary Report
+        </Typography>
+      )}
       {/* Toolbar */}
       {!loading && (
-        <Stack direction="row" alignItems="center" justifyContent="flex-start" mb={1} flexWrap="wrap" gap={2}>
+        <Stack direction="row" alignItems="center" justifyContent="flex-start" mb={1} flexWrap="wrap" gap={1.5}>
           <Typography variant="body2" color="text.secondary">
             {filteredRows.length} of {data.length} records
           </Typography>
