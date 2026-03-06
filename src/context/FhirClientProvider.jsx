@@ -72,8 +72,9 @@ export default function FhirClientProvider(props) {
             });
           })
           .catch((e) => {
+            console.log("error loading patient ", e);
             dispatch({
-              error: e,
+             // error: e,
               isReady: true
             });
           });
