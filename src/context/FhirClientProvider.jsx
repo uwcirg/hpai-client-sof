@@ -21,6 +21,7 @@ export default function FhirClientProvider(props) {
     client: null,
     patient: null,
     error: null,
+    isReady: false
   });
 
   const getPatient = async (client) => {
@@ -32,6 +33,7 @@ export default function FhirClientProvider(props) {
       console.log("Using stored patient id ", queryPatientId);
       return client.request("/Patient/" + queryPatientId);
     }
+
     // Get the Patient resource
     return await client.patient.read();
   };
@@ -64,11 +66,13 @@ export default function FhirClientProvider(props) {
             dispatch({
               client: client,
               patient: result,
+              isReady: true
             });
           })
           .catch((e) => {
             dispatch({
               error: e,
+              isReady: true
             });
           });
       },
@@ -76,6 +80,7 @@ export default function FhirClientProvider(props) {
         console.log("Auth error: ", error);
         dispatch({
           error: error,
+          isReady: true
         });
       },
     );
@@ -84,7 +89,7 @@ export default function FhirClientProvider(props) {
   return (
     <FhirClientContext.Provider value={state}>
       <FhirClientContext.Consumer>
-        {({ client, patient, error }) => {
+        {({ isReady, client, error }) => {
           // any auth error that may have been rejected with
           if (error) {
             return (
@@ -95,8 +100,8 @@ export default function FhirClientProvider(props) {
             );
           }
 
-          // if client and patient are available render the children component(s)
-          if (client && patient) {
+          // if client is available render the children component(s)
+          if (client && isReady) {
             return props.children;
           }
 
