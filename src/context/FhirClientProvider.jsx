@@ -34,6 +34,8 @@ export default function FhirClientProvider(props) {
       return client.request("/Patient/" + queryPatientId);
     }
 
+    if (!client.patient) return;
+
     // Get the Patient resource
     return await client.patient.read();
   };
