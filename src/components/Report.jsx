@@ -446,7 +446,7 @@ function exportToCsv(rows, allColumns) {
   URL.revokeObjectURL(url);
 }
 
-export default function Report({ removeNulls = true }) {
+export default function Report({ removeNulls = false }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
