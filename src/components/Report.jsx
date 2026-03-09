@@ -43,10 +43,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import FilterListOffIcon from "@mui/icons-material/FilterListOff";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { getEnv } from "@util";
-
-const ENV_API_URL = getEnv("REACT_APP_REPORT_URL");
-const API_URL = ENV_API_URL ? ENV_API_URL : "https://aidbox.hpai.doh.dev.cirg.uw.edu/$query/aidboxquery_hpai_qr_report";
+import { fetchEnvData } from "@util";
 
 // Columns shown in the mobile card view (excludes csvOnly and notes columns for brevity)
 const MOBILE_VISIBLE_KEYS = [
@@ -465,6 +462,9 @@ export default function Report({ removeNulls = true }) {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const fetchData = async () => {
+    const envs = await fetchEnvData();
+    const BASE_URL = envs ? envs["REACT_APP_FHIR_URL"] : "https://aidbox.hpai.doh.dev.cirg.uw.edu";
+    const API_URL = `${BASE_URL}/$query/aidboxquery_hpai_qr_report`;
     setLoading(true);
     setError(null);
     try {
