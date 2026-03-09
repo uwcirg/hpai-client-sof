@@ -463,7 +463,7 @@ export default function Report({ removeNulls = true }) {
 
   const fetchData = async () => {
     const envs = await fetchEnvData();
-    const BASE_URL = envs ? envs("REACT_APP_FHIR_URL") : "https://aidbox.hpai.doh.dev.cirg.uw.edu";
+    const BASE_URL = envs ? envs["REACT_APP_FHIR_URL"] : "https://aidbox.hpai.doh.dev.cirg.uw.edu";
     const API_URL = `${BASE_URL}/$query/aidboxquery_hpai_qr_report`;
     setLoading(true);
     setError(null);
