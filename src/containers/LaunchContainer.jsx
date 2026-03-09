@@ -8,6 +8,7 @@ import { fetchEnvData, getEnv } from "@util";
 import { getTheme } from "@config/theme_config";
 import ErrorComponent from "@components/ErrorComponent";
 import "../style/App.scss";
+import ReturnButton from "@components/ReturnButton";
 
 const fetchContextJson = async (authURL) => {
   if (!authURL) {
@@ -41,29 +42,53 @@ const fetchContextJson = async (authURL) => {
   return contextJson;
 };
 
+function reducer(state, action) {
+  if (action.type === "loading") {
+    return {
+      loading: true,
+      authorized: false,
+      error: "",
+    };
+  }
+  if (action.type === "authorized") {
+    return {
+      loading: false,
+      authorized: true,
+      error: "",
+    };
+  }
+  if (action.type === "error") {
+    return {
+      loading: false,
+      authorized: false,
+      error: action.payload || "Application error.",
+    };
+  }
+  throw Error("Unknown action. ", action.type);
+}
+
 export default function Launch() {
-  const [error, setError] = React.useState("");
+  const [state, dispatch] = React.useReducer(reducer, { loading: true, authorized: false, error: "" });
+
   React.useEffect(() => {
     fetchEnvData().then((results) => {
       console.log("environment variables ", results);
       const backendURL = getEnv("REACT_APP_CONF_API_URL");
       const authURL = backendURL ? `${backendURL}/auth/auth-info` : "";
       const urlParams = new URLSearchParams(window.location.search);
-      //retrieve patient id from URL querystring if any
       const patientId = urlParams.get("patient");
       console.log("patient id from url query string: ", patientId);
-      //retrieve need patient banner querystring if any
-      const needPatientBanner = urlParams.get("need_patient_banner")
+      const needPatientBanner = urlParams.get("need_patient_banner");
       console.log("need_patient_banner from url query string: ", needPatientBanner);
       console.log("Auth url ", authURL);
+
       fetchContextJson(authURL)
         .then((json) => {
           if (!json) {
-            setError("No valid context json specified");
+            dispatch({ type: "error", payload: "No valid context json specified" });
             return;
           }
           if (patientId) {
-            // only do this IF patient id comes from url queryString
             json.patientId = patientId;
             sessionStorage.setItem(queryPatientIdKey, patientId);
           }
@@ -85,19 +110,29 @@ export default function Launch() {
           sessionStorage.setItem("launchContextJson", JSON.stringify(json));
 
           console.log("launch context json ", json);
-          FHIR.oauth2.authorize(json).catch((e) => {
-            console.log("FHIR auth error ", e);
-            setError("Fhir auth error. see console for detail.");
-          });
+          FHIR.oauth2
+            .authorize(json)
+            .then(() => {
+              dispatch({ type: "authorized" });
+            })
+            .catch((e) => {
+              console.log("FHIR auth error ", e);
+              dispatch({ type: "error", payload: "Fhir auth error. see console for detail." });
+            });
         })
-        .catch((error) => setError(error?.message));
+        .catch((error) => dispatch({ type: "error", payload: error?.message }));
     });
   }, []);
 
   return (
     <ThemeProvider theme={getTheme()}>
-      {error && <ErrorComponent message={error}></ErrorComponent>}
-      {!error && (
+      {state.error && (
+        <Stack spacing={1} direction="column" alignItems="flex-start" sx={{ padding: 1, width: "100%" }}>
+          <ErrorComponent message={state.error} containerStyle={{ width: "100%" }}></ErrorComponent>
+          <ReturnButton />
+        </Stack>
+      )}
+      {state.loading && (
         <Stack spacing={2} direction="row" sx={{ padding: (theme) => theme.spacing(3) }} alignItems="center">
           <CircularProgress></CircularProgress>
           <div>Launching ...</div>
