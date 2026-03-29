@@ -39,7 +39,7 @@ const Summary = () => {
               {
                 name: "theme",
                 valueString: "wa-doh-theme",
-              }
+              },
             ],
           }),
           headers: {
@@ -94,15 +94,16 @@ const Summary = () => {
   const versionString = getEnvVersion();
 
   return (
-    <Box className="summary-wrapper"><iframe
-      src={link}
-      title="SOF app iframe"
-      width="100%"
-      height="100%"
-      frameBorder={0}
-      sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-top-navigation"
-    ></iframe>
-    <footer>Version: {versionString}</footer>
+    <Box className="summary-wrapper">
+      <iframe
+        src={link}
+        title="SOF app iframe"
+        width="100%"
+        height="100%"
+        frameBorder={0}
+        sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-top-navigation"
+      ></iframe>
+      <footer>Version: {versionString}</footer>
     </Box>
   );
 };

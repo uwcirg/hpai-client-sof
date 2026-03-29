@@ -8,4 +8,3 @@ root.render(
   <LaunchContainer />
   // </React.StrictMode>
 );
-
